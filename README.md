@@ -1,9 +1,9 @@
-#python3 - python3 new 17/3/2019
+#python3
 
-NEW 17/3/2019
---------------------------------
+NEW 8/4/2019
+
 =====Termux=====
----------------------------------
+
 - pkg update
 - pkg upgrade
 - pkg install python
@@ -37,13 +37,15 @@ NEW 17/3/2019
 - pip3 install antolib
 - git clone https://github.com/Cupzaa/NewBot2019.git
 - cd Bot
-- python3 k.py
------------------------------------------------------
+- python3 a.py
 
-ติดตาม ช่อง   =      https://www.youtube.com/watch?v=nLWE6TMCwIQ
 
--------------------------------------------------------
+#=============================================================
 
-Add Line =  line.me/R/ti/p/~yim_cjs
+โหลดโทเคน = git clone https://github.com/Cupzaa/QRtoken.git
 
--------------------------------------------------------
+ติดตาม ช่อง = https://www.youtube.com/watch?v=nLWE6TMCwIQ
+
+Add Line = https://line.me/R/ti/p/~yim_cjs
+
+#=============================================================
