@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from akad.ttypes import MediaType
+from types import *
 
 def loggedIn(func):
     def checkLogin(*args, **kwargs):

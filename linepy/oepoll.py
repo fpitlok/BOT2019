@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from akad.ttypes import TalkException, ShouldSyncException
 from .client import LINE
-from threading import Thread
 from types import *
 
-import os, sys, time
+import os, sys, threading, time
 
 class OEPoll(object):
     OpInterrupt = {}
@@ -14,79 +12,54 @@ class OEPoll(object):
 
     def __init__(self, client):
         if type(client) is not LINE:
-            raise Exception('You need to set LINE instance to initialize OEPoll')
+            raise Exception("You need to set LINE instance to initialize LinePoll")
         self.client = client
-        self.threads = []
-
-    def __execute(self, op, threading):
-        try:
-            if threading:
-                _td = Thread(target=self.OpInterrupt[op.type], args=(op,))
-                _td.daemon = False
-                self.threads.append(_td)
-            else:
-                self.OpInterrupt[op.type](op)
-        except Exception as e:
-            self.client.log(e)
+    
+    def fetchOperation(self, revision, count=1):
+         return self.client.poll.fetchOperations(revision, count)
 
     def addOpInterruptWithDict(self, OpInterruptDict):
         self.OpInterrupt.update(OpInterruptDict)
 
     def addOpInterrupt(self, OperationType, DisposeFunc):
         self.OpInterrupt[OperationType] = DisposeFunc
+        
+    def execute(self, op, thread):
+        try:
+            if thread == True:
+                _td = threading.Thread(target=self.OpInterrupt[op.type], args=(op,))
+                _td.daemon = False
+                _td.start()
+            else:
+                self.OpInterrupt[op.type](op)
+        except Exception as e:
+            self.client.log(e)
     
     def setRevision(self, revision):
         self.client.revision = max(revision, self.client.revision)
 
-    def singleTrace(self, count=1, fetchOperations=None):
-        if not fetchOperations:
-            fetchOperations = self.client.fetchOperation
+    def singleTrace(self, count=2):
         try:
-            operations = fetchOperations(self.client.revision, count=count)
+            operations = self.fetchOperation(self.client.revision, count=count)
         except KeyboardInterrupt:
-            sys.exit()
-        except ShouldSyncException:
-            self.setRevision(self.client.poll.getLastOpRevision())
-            return []
+            exit()
         except:
-            return []
-
+            return
+        
         if operations is None:
-            return []
+            self.client.log('No operation available now.')
         else:
             return operations
 
-    def trace(self, threading=False, fetchOperations=None):
-        if not fetchOperations:
-            fetchOperations = self.client.fetchOperation
+    def trace(self, thread=False):
         try:
-            operations = fetchOperations(self.client.revision)
+            operations = self.fetchOperation(self.client.revision)
         except KeyboardInterrupt:
-            sys.exit()
-        except ShouldSyncException:
-            self.setRevision(self.client.poll.getLastOpRevision())
-            return
+            exit()
         except:
             return
         
         for op in operations:
             if op.type in self.OpInterrupt.keys():
-                self.__execute(op, threading)
+                self.execute(op, thread)
             self.setRevision(op.revision)
-        for thread in self.threads:
-            thread.start()
-        for thread in self.threads:
-            thread.join()
-        self.threads = []
-
-    def singleFetchSquareChat(self, squareChatMid, limit=1):
-        if squareChatMid not in self.__squareSubId:
-            self.__squareSubId[squareChatMid] = 0
-        if squareChatMid not in self.__squareSyncToken:
-            self.__squareSyncToken[squareChatMid] = ''
-        
-        sqcEvents = self.client.fetchSquareChatEvents(squareChatMid, subscriptionId=self.__squareSubId[squareChatMid], syncToken=self.__squareSyncToken[squareChatMid], limit=limit, direction=1)
-        self.__squareSubId[squareChatMid] = sqcEvents.subscription
-        self.__squareSyncToken[squareChatMid] = sqcEvents.syncToken
-
-        return sqcEvents.events
