@@ -12,8 +12,6 @@ from googletrans import Translator
 botStart = time.time()
 #==============================================================================#
 nadya = LINE()
-#nadya = LINE("ใส่โทเคน")
-#nadya = LINE("Email","Password")
 nadya.log("Auth Token : " + str(nadya.authToken))
 channelToken = nadya.getChannelResult()
 nadya.log("Channel Token : " + str(channelToken))
@@ -78,11 +76,11 @@ def helpmessage():
     helpMessage = "╔═══════════════" + "\n" + \
                   "╠♥ ✿✿✿ YIM_TJ ✿✿✿ ♥" + "\n" + \
                   "║" + "\n" + \
-                  "╠══✪〘 Help Message 〙✪══" + "\n" + \
+                  "╠══✪〘 Translate 〙✪══" + "\n" + \
                   "║" + "\n" + \
                   "╠✪〘 Help 〙✪════════" + "\n" + \
                   "╠➥ ดู" + "\n" + \
-                  "╠➥ Translate" + "\n" + \
+                  "╠➥ แปล" + "\n" + \
                   "╠➥ Texttospeech" + "\n" + \
                   "║" + "\n" + \
                   "╠✪〘 Status 〙✪════════" + "\n" + \
@@ -365,10 +363,10 @@ def lineBot(op):
                     helpMessage = helpmessage()
                     nadya.sendMessage(to, str(helpMessage))
                     nadya.sendContact(to, "u669aa92773d33c22420105d4546fccdd")
-                elif text.lower() == 'texttospeech':
+                elif text.lower() == 'แปลพิม':
                     helpTextToSpeech = helptexttospeech()
                     nadya.sendMessage(to, str(helpTextToSpeech))
-                elif text.lower() == 'translate':
+                elif text.lower() == 'แปล':
                     helpTranslate = helptranslate()
                     nadya.sendMessage(to, str(helpTranslate))
 #==============================================================================#
